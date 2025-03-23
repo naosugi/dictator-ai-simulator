@@ -50,15 +50,25 @@ export const gameReducer = (state, action) => {
     case 'NEXT_PHASE': {
       switch (state.phase) {
         case PHASES.PRE_TURN:
-          return {
+          // イベント効果の適用
+          const updatedAiPower = Math.max(0, state.aiPower + (state.currentEvent?.effects?.aiPower || 0));
+          const updatedEnergy = Math.max(0, state.energy + (state.currentEvent?.effects?.energy || 0));
+          const updatedEconomy = Math.max(0, state.economy + (state.currentEvent?.effects?.economy || 0));
+          const updatedStability = Math.max(0, state.stability + (state.currentEvent?.effects?.stability || 0));
+          
+          // 更新された状態
+          const updatedState = {
             ...state,
+            aiPower: updatedAiPower,
+            energy: updatedEnergy,
+            economy: updatedEconomy,
+            stability: updatedStability,
+          };
+          
+          return {
+            ...updatedState,
             phase: PHASES.CARD_SELECTION,
-            // Apply event effects
-            aiPower: Math.max(0, state.aiPower + (state.currentEvent?.effects?.aiPower || 0)),
-            energy: Math.max(0, state.energy + (state.currentEvent?.effects?.energy || 0)),
-            economy: Math.max(0, state.economy + (state.currentEvent?.effects?.economy || 0)),
-            stability: Math.max(0, state.stability + (state.currentEvent?.effects?.stability || 0)),
-            availableCards: getAvailableCards(state),
+            availableCards: getAvailableCards(updatedState),
           };
           
         case PHASES.CARD_SELECTION:
@@ -168,15 +178,27 @@ export const gameReducer = (state, action) => {
     }
     
     case 'CONFIRM_EVENT':
+      // イベント効果の適用
+      const newAiPower = Math.max(0, state.aiPower + (state.currentEvent?.effects?.aiPower || 0));
+      const newEnergy = Math.max(0, state.energy + (state.currentEvent?.effects?.energy || 0));
+      const newEconomy = Math.max(0, state.economy + (state.currentEvent?.effects?.economy || 0));
+      const newStability = Math.max(0, state.stability + (state.currentEvent?.effects?.stability || 0));
+      
       return {
         ...state,
         phase: PHASES.CARD_SELECTION,
+        // 状態を更新
+        aiPower: newAiPower,
+        energy: newEnergy,
+        economy: newEconomy,
+        stability: newStability,
+        // 更新された状態で利用可能なカードを取得
         availableCards: getAvailableCards({
           ...state,
-          aiPower: Math.max(0, state.aiPower + (state.currentEvent?.effects?.aiPower || 0)),
-          energy: Math.max(0, state.energy + (state.currentEvent?.effects?.energy || 0)),
-          economy: Math.max(0, state.economy + (state.currentEvent?.effects?.economy || 0)),
-          stability: Math.max(0, state.stability + (state.currentEvent?.effects?.stability || 0)),
+          aiPower: newAiPower,
+          energy: newEnergy,
+          economy: newEconomy,
+          stability: newStability,
         }),
       };
       
