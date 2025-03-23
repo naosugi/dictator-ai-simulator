@@ -60,6 +60,24 @@ export const gameReducer = (state, action) => {
           const updatedEconomy = Math.max(0, state.economy + (state.currentEvent?.effects?.economy || 0));
           const updatedStability = Math.max(0, state.stability + (state.currentEvent?.effects?.stability || 0));
           
+          // イベント効果適用後にゲームオーバー条件をチェック
+          if (updatedEnergy <= 0 || updatedEconomy <= 0 || updatedStability <= 0) {
+            let gameOverReason = '';
+            if (updatedEnergy <= 0) gameOverReason = 'エネルギー危機により国家崩壊';
+            else if (updatedEconomy <= 0) gameOverReason = '経済崩壊により国家崩壊';
+            else if (updatedStability <= 0) gameOverReason = '体制秩序崩壊により国家崩壊';
+            
+            return {
+              ...state,
+              energy: Math.max(0, updatedEnergy),
+              economy: Math.max(0, updatedEconomy),
+              stability: Math.max(0, updatedStability),
+              aiPower: updatedAiPower,
+              phase: PHASES.GAME_OVER,
+              gameOverReason,
+            };
+          }
+          
           // 更新された状態
           const updatedState = {
             ...state,
@@ -77,19 +95,50 @@ export const gameReducer = (state, action) => {
           
         case PHASES.CARD_SELECTION:
           if (!state.selectedCard) return state;
+          
+          // カード効果を現在のパラメータに適用
+          const cardEffectAiPower = Math.max(0, state.aiPower + (state.selectedCard.effects?.aiPower || 0));
+          const cardEffectEnergy = Math.max(0, state.energy + (state.selectedCard.effects?.energy || 0));
+          const cardEffectEconomy = Math.max(0, state.economy + (state.selectedCard.effects?.economy || 0));
+          const cardEffectStability = Math.max(0, state.stability + (state.selectedCard.effects?.stability || 0));
+          
+          // 変化量への影響
+          const newAiPowerChange = state.aiPowerChange + (state.selectedCard.effects?.aiPowerChange || 0);
+          const newEnergyChange = state.energyChange + (state.selectedCard.effects?.energyChange || 0);
+          const newEconomyChange = state.economyChange + (state.selectedCard.effects?.economyChange || 0);
+          const newStabilityChange = state.stabilityChange + (state.selectedCard.effects?.stabilityChange || 0);
+          
+          // カード効果適用後にゲームオーバー条件をチェック
+          if (cardEffectEnergy <= 0 || cardEffectEconomy <= 0 || cardEffectStability <= 0) {
+            let gameOverReason = '';
+            if (cardEffectEnergy <= 0) gameOverReason = 'エネルギー危機により国家崩壊';
+            else if (cardEffectEconomy <= 0) gameOverReason = '経済崩壊により国家崩壊';
+            else if (cardEffectStability <= 0) gameOverReason = '体制秩序崩壊により国家崩壊';
+            
+            return {
+              ...state,
+              energy: Math.max(0, cardEffectEnergy),
+              economy: Math.max(0, cardEffectEconomy),
+              stability: Math.max(0, cardEffectStability),
+              aiPower: cardEffectAiPower,
+              phase: PHASES.GAME_OVER,
+              gameOverReason,
+            };
+          }
+          
           return {
             ...state,
             phase: PHASES.CARD_EFFECT,
             // Apply card effects to current state
-            aiPower: Math.max(0, state.aiPower + (state.selectedCard.effects?.aiPower || 0)),
-            energy: Math.max(0, state.energy + (state.selectedCard.effects?.energy || 0)),
-            economy: Math.max(0, state.economy + (state.selectedCard.effects?.economy || 0)),
-            stability: Math.max(0, state.stability + (state.selectedCard.effects?.stability || 0)),
+            aiPower: cardEffectAiPower,
+            energy: cardEffectEnergy,
+            economy: cardEffectEconomy,
+            stability: cardEffectStability,
             // Apply card effects to change parameters
-            aiPowerChange: state.aiPowerChange + (state.selectedCard.effects?.aiPowerChange || 0),
-            energyChange: state.energyChange + (state.selectedCard.effects?.energyChange || 0),
-            economyChange: state.economyChange + (state.selectedCard.effects?.economyChange || 0),
-            stabilityChange: state.stabilityChange + (state.selectedCard.effects?.stabilityChange || 0),
+            aiPowerChange: newAiPowerChange,
+            energyChange: newEnergyChange,
+            economyChange: newEconomyChange,
+            stabilityChange: newStabilityChange,
           };
           
         case PHASES.CARD_EFFECT:
@@ -191,22 +240,38 @@ export const gameReducer = (state, action) => {
       const newEconomy = Math.max(0, state.economy + (state.currentEvent?.effects?.economy || 0));
       const newStability = Math.max(0, state.stability + (state.currentEvent?.effects?.stability || 0));
       
-      return {
+      // イベント効果適用後にゲームオーバー条件をチェック
+      if (newEnergy <= 0 || newEconomy <= 0 || newStability <= 0) {
+        let gameOverReason = '';
+        if (newEnergy <= 0) gameOverReason = 'エネルギー危機により国家崩壊';
+        else if (newEconomy <= 0) gameOverReason = '経済崩壊により国家崩壊';
+        else if (newStability <= 0) gameOverReason = '体制秩序崩壊により国家崩壊';
+        
+        return {
+          ...state,
+          energy: Math.max(0, newEnergy),
+          economy: Math.max(0, newEconomy),
+          stability: Math.max(0, newStability),
+          aiPower: newAiPower,
+          phase: PHASES.GAME_OVER,
+          gameOverReason,
+        };
+      }
+      
+      // 更新された状態
+      const confirmedEventState = {
         ...state,
-        phase: PHASES.CARD_SELECTION,
-        // 状態を更新
         aiPower: newAiPower,
         energy: newEnergy,
         economy: newEconomy,
-        stability: newStability,
+        stability: newStability
+      };
+      
+      return {
+        ...confirmedEventState,
+        phase: PHASES.CARD_SELECTION,
         // 更新された状態で利用可能なカードを取得
-        availableCards: getAvailableCards({
-          ...state,
-          aiPower: newAiPower,
-          energy: newEnergy,
-          economy: newEconomy,
-          stability: newStability,
-        }),
+        availableCards: getAvailableCards(confirmedEventState),
       };
       
     case 'RESET_GAME':
