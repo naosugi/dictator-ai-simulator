@@ -16,7 +16,7 @@ export const PHASES = {
 export const initialState = {
   phase: PHASES.MENU,
   turn: 1,
-  maxTurns: 20,
+  maxTurns: 25, // 20から25ターンに変更
   
   // Current state parameters
   aiPower: 0,
@@ -125,14 +125,19 @@ export const gameReducer = (state, action) => {
           
           // Check if last turn
           if (state.turn >= state.maxTurns) {
-            return {
+            // 最終ターン状態を作成
+            const finalState = {
               ...state,
               energy: newEnergy,
               economy: newEconomy,
               stability: newStability,
-              aiPower: newAiPower,
+              aiPower: newAiPower
+            };
+            
+            return {
+              ...finalState,
               phase: PHASES.ENDING,
-              ending: getEnding(state),
+              ending: getEnding(finalState),
             };
           }
           
