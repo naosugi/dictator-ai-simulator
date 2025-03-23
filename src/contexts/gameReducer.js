@@ -41,10 +41,14 @@ export const initialState = {
 export const gameReducer = (state, action) => {
   switch (action.type) {
     case 'START_NEW_GAME':
+      // 新ゲーム用の初期状態を作成
+      const newGameState = {...initialState};
+      
+      // 初期状態に基づいてイベントを取得
       return {
-        ...initialState,
+        ...newGameState,
         phase: PHASES.PRE_TURN,
-        currentEvent: getRandomEvent(state),
+        currentEvent: getRandomEvent(newGameState),
       };
       
     case 'NEXT_PHASE': {
@@ -132,25 +136,23 @@ export const gameReducer = (state, action) => {
             };
           }
           
-          // Next turn
-          return {
+          // 次のターンの状態を作成
+          const nextTurnState = {
             ...state,
             turn: state.turn + 1,
             energy: newEnergy,
-            economy: newEconomy,
+            economy: newEconomy, 
             stability: newStability,
             aiPower: newAiPower,
-            phase: PHASES.PRE_TURN,
-            currentEvent: getRandomEvent({ 
-              ...state,
-              energy: newEnergy,
-              economy: newEconomy,
-              stability: newStability,
-              aiPower: newAiPower,
-              turn: state.turn + 1,
-            }),
             selectedCard: null,
             availableCards: [],
+          };
+          
+          // 更新された状態に基づいてイベントを取得
+          return {
+            ...nextTurnState,
+            phase: PHASES.PRE_TURN,
+            currentEvent: getRandomEvent(nextTurnState),
           };
         }
         

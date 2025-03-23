@@ -7,7 +7,7 @@ const events = [
     condition: null, // 条件なし
     effects: {
       economy: 20,
-      stability: -5
+      stability: -1
     },
     weight: 10 // 発生確率の重み
   },
@@ -18,7 +18,7 @@ const events = [
     condition: { energy: { min: 30 } },
     effects: {
       energy: -15,
-      stability: -10
+      stability: -5
     },
     weight: 8
   },
@@ -27,12 +27,12 @@ const events = [
     name: '国際制裁',
     description: 'あなたのAI政策に対して国際社会から制裁措置が取られました。',
     condition: { 
-      aiPower: { min: 200 },
+      aiPower: { min: 20 },
       requiredCards: ['surveillance_ai']
     },
     effects: {
       economy: -20,
-      stability: -15
+      stability: -1
     },
     weight: 5
   },
@@ -41,7 +41,7 @@ const events = [
     name: 'AI技術のブレイクスルー',
     description: 'あなたの国の研究者たちがAI技術で重要なブレイクスルーを達成しました。',
     condition: { 
-      aiPower: { min: 100 },
+      aiPower: { min: 20 },
       requiredCards: ['ai_researcher_ai']
     },
     effects: {
@@ -59,7 +59,7 @@ const events = [
       requiredCards: ['ai_robot_factory']
     },
     effects: {
-      stability: -20,
+      stability: -10,
       economy: -5
     },
     weight: 6
@@ -68,9 +68,9 @@ const events = [
     id: 'hackers_attack',
     name: 'ハッカー攻撃',
     description: '海外のハッカー集団があなたの国のAIシステムに攻撃を仕掛けてきました。',
-    condition: { aiPower: { min: 50 } },
+    condition: { aiPower: { min: 10 } },
     effects: {
-      aiPower: -10,
+      aiPower: -2,
       stability: -5
     },
     weight: 9
@@ -96,7 +96,7 @@ const events = [
       stability: { max: 150 }
     },
     effects: {
-      stability: -30,
+      stability: -10,
       economy: -15
     },
     weight: 5
@@ -105,12 +105,12 @@ const events = [
     id: 'ai_malfunction',
     name: 'AI誤作動',
     description: '重要なAIシステムが誤作動を起こし、一部のインフラに被害が出ました。',
-    condition: { aiPower: { min: 300 } },
+    condition: { aiPower: { min: 30 } },
     effects: {
-      aiPower: -20,
+      aiPower: -10,
       energy: -10,
       economy: -15,
-      stability: -10
+      stability: -5
     },
     weight: 6
   },
@@ -119,11 +119,11 @@ const events = [
     name: '国際協力',
     description: '他国とのAI研究協力協定が締結され、技術交流が促進されました。',
     condition: { 
-      aiPower: { min: 150 },
+      aiPower: { min: 20 },
       stability: { min: 80 }
     },
     effects: {
-      aiPower: 30,
+      aiPower: 5,
       economy: 15,
       stability: 5
     },
@@ -134,7 +134,7 @@ const events = [
     name: 'AIシンギュラリティ',
     description: 'あなたの国のAIが突如として著しい知性の向上を示しました。人類にとって脅威か味方か？',
     condition: { 
-      aiPower: { min: 800 },
+      aiPower: { min: 100 },
       requiredCards: ['ai_researcher_ai']
     },
     effects: {
@@ -151,7 +151,7 @@ const events = [
     effects: {
       energy: -20,
       economy: -25,
-      stability: -15
+      stability: -10
     },
     weight: 4
   },
@@ -173,10 +173,10 @@ const events = [
     description: '優秀な科学者や技術者が他国へ流出しています。',
     condition: { 
       stability: { max: 100 },
-      aiPower: { min: 100 }
+      aiPower: { min: 10 }
     },
     effects: {
-      aiPower: -15,
+      aiPower: -5,
       economy: -10
     },
     weight: 6
@@ -196,6 +196,15 @@ const events = [
 
 // ゲームの状態に基づいてランダムなイベントを取得する関数
 export const getRandomEvent = (state) => {
+  // stateが正しく渡されているか確認
+  if (!state) {
+    console.error('getRandomEvent: state is undefined');
+    return null;
+  }
+
+  // selectedCardsがない場合は空の配列を使用
+  const selectedCards = state.selectedCards || [];
+  
   // 条件に合致するイベントをフィルタリング
   const availableEvents = events.filter(event => {
     // 条件がなければ常に選択可能
@@ -205,6 +214,12 @@ export const getRandomEvent = (state) => {
     for (const [param, condition] of Object.entries(event.condition)) {
       if (param === 'requiredCards') continue;
       
+      // 対応するパラメータが存在することを確認
+      if (state[param] === undefined) {
+        console.warn(`getRandomEvent: Parameter ${param} not found in state for event condition`);
+        return false;
+      }
+      
       if (condition.min && state[param] < condition.min) return false;
       if (condition.max && state[param] > condition.max) return false;
     }
@@ -212,7 +227,7 @@ export const getRandomEvent = (state) => {
     // 必要カードの条件チェック
     if (event.condition.requiredCards) {
       for (const requiredCard of event.condition.requiredCards) {
-        if (!state.selectedCards.includes(requiredCard)) return false;
+        if (!selectedCards.includes(requiredCard)) return false;
       }
     }
     
@@ -220,7 +235,16 @@ export const getRandomEvent = (state) => {
   });
 
   // 利用可能なイベントがなければnullを返す
-  if (availableEvents.length === 0) return null;
+  if (availableEvents.length === 0) {
+    // 常に選択可能なイベントだけを取得（条件なしイベント）
+    const fallbackEvents = events.filter(event => !event.condition);
+    
+    // 条件なしイベントもなければnullを返す
+    if (fallbackEvents.length === 0) return null;
+    
+    // ランダムに1つ選択して返す
+    return fallbackEvents[Math.floor(Math.random() * fallbackEvents.length)];
+  }
   
   // 重みに基づいてイベントを選択
   const totalWeight = availableEvents.reduce((sum, event) => sum + event.weight, 0);

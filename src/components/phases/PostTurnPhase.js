@@ -132,10 +132,18 @@ const PostTurnPhase = () => {
   
   // 前回の値を計算（変化を表示するため）
   const previousValues = {
-    aiPower: state.aiPower - state.aiPowerChange,
-    energy: state.energy - state.energyChange,
-    economy: state.economy - state.economyChange,
-    stability: state.stability - state.stabilityChange,
+    aiPower: Math.max(0, state.aiPower - state.aiPowerChange),
+    energy: Math.max(0, state.energy - state.energyChange),
+    economy: Math.max(0, state.economy - state.economyChange),
+    stability: Math.max(0, state.stability - state.stabilityChange),
+  };
+  
+  // 変更後の値の計算も正確にする
+  const newValues = {
+    aiPower: state.aiPower,
+    energy: state.energy,
+    economy: state.economy,
+    stability: state.stability,
   };
   
   useEffect(() => {
@@ -186,7 +194,7 @@ const PostTurnPhase = () => {
               type="aiPower" 
               change={state.aiPowerChange}
             >
-              {state.aiPower}
+              {newValues.aiPower}
             </NewValue>
           </StatusChange>
         </StatusUpdateRow>
@@ -205,7 +213,7 @@ const PostTurnPhase = () => {
               type="energy" 
               change={state.energyChange}
             >
-              {state.energy}
+              {newValues.energy}
             </NewValue>
           </StatusChange>
         </StatusUpdateRow>
@@ -224,7 +232,7 @@ const PostTurnPhase = () => {
               type="economy" 
               change={state.economyChange}
             >
-              {state.economy}
+              {newValues.economy}
             </NewValue>
           </StatusChange>
         </StatusUpdateRow>
@@ -243,7 +251,7 @@ const PostTurnPhase = () => {
               type="stability" 
               change={state.stabilityChange}
             >
-              {state.stability}
+              {newValues.stability}
             </NewValue>
           </StatusChange>
         </StatusUpdateRow>
