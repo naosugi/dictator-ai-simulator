@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/dictator-ai-simulator/static/css/main.ed6e55af.css",
+    "main.js": "/dictator-ai-simulator/static/js/main.694b0d95.js",
+    "index.html": "/dictator-ai-simulator/index.html",
+    "main.ed6e55af.css.map": "/dictator-ai-simulator/static/css/main.ed6e55af.css.map",
+    "main.694b0d95.js.map": "/dictator-ai-simulator/static/js/main.694b0d95.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ed6e55af.css",
+    "static/js/main.694b0d95.js"
+  ]
+}
