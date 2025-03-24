@@ -2,17 +2,21 @@
   "name": "dictator-ai-simulator",
   "version": "1.0.0",
   "private": true,
+  "homepage": "https://naosugi.github.io/dictator-ai-simulator",
   "dependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-scripts": "^5.0.1",
-    "styled-components": "^6.1.16"
+    "styled-components": "^6.1.16",
+    "gh-pages": "^6.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [

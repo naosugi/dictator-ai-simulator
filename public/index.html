@@ -13,6 +13,21 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>独裁者AI国家シミュレーター</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- GitHub Pages SPA対応のためのリダイレクトスクリプト -->
+    <script type="text/javascript">
+      // GitHub Pagesでのシングルページアプリケーション対応
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, null,
+              l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+    </script>
   </head>
   <body>
     <noscript>このアプリを実行するには、JavaScriptを有効にする必要があります。</noscript>
