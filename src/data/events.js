@@ -3,13 +3,13 @@ const events = [
   {
     id: 'foreign_investment',
     name: '外国からの投資',
-    description: '外国企業があなたの国へのAI投資に関心を示しています。',
-    condition: null, // 条件なし
+    description: '外国企業があなたの国へのAI投資に関心を示しました。',
+    condition: {aiPower: { min: 5 }},
     effects: {
       economy: 20,
       stability: -1
     },
-    weight: 10 // 発生確率の重み
+    weight: 4 // 発生確率の重み
   },
   {
     id: 'energy_crisis',
@@ -17,52 +17,63 @@ const events = [
     description: '電力需要の急増により一時的なエネルギー危機が発生しました。',
     condition: { energy: { min: 30 } },
     effects: {
-      energy: -15,
+      energy: -10,
       stability: -5
     },
-    weight: 8
+    weight: 1
   },
   {
     id: 'international_sanctions',
     name: '国際制裁',
-    description: 'あなたのAI政策に対して国際社会から制裁措置が取られました。',
+    description: 'あなたのAI政策に対して国際社会から経済制裁措置が取られました。',
     condition: { 
-      aiPower: { min: 20 },
       requiredCards: ['surveillance_ai']
     },
     effects: {
-      economy: -20,
+      economy: -5,
       stability: -1
     },
-    weight: 5
+    weight: 10
   },
   {
     id: 'ai_breakthrough',
     name: 'AI技術のブレイクスルー',
-    description: 'あなたの国の研究者たちがAI技術で重要なブレイクスルーを達成しました。',
+    description: 'あなたの国のAIが、AI技術で重要なブレイクスルーを達成しました。',
     condition: { 
-      aiPower: { min: 20 },
       requiredCards: ['ai_researcher_ai']
     },
     effects: {
       aiPower: 50,
-      stability: 10
+      stability: 1
     },
-    weight: 7
+    weight:15
+  },
+  {
+    id: 'power_breakthrough',
+    name: '発電技術のブレイクスルー',
+    description: 'あなたの国のAIが、発電技術で重要なブレイクスルーを達成しました。',
+    condition: { 
+      requiredCards: ['power_generation_breakthrough']
+    },
+    effects: {
+      energy: 40,
+      stability: 1
+    },
+    weight:30
   },
   {
     id: 'public_protest',
-    name: '市民のデモ',
-    description: 'AIによる雇用喪失を懸念する市民のデモが発生しました。',
+    name: '臣民のデモ',
+    description: 'AIによる雇用喪失を懸念するデモが発生しました。',
     condition: { 
       stability: { max: 120 },
-      requiredCards: ['ai_robot_factory']
+      requiredCards: ['office_ai']
     },
     effects: {
       stability: -10,
       economy: -5
     },
-    weight: 6
+    weight: 3
   },
   {
     id: 'hackers_attack',
@@ -70,22 +81,22 @@ const events = [
     description: '海外のハッカー集団があなたの国のAIシステムに攻撃を仕掛けてきました。',
     condition: { aiPower: { min: 10 } },
     effects: {
-      aiPower: -2,
-      stability: -5
+      aiPower: -1,
+      stability: -1
     },
-    weight: 9
+    weight: 3
   },
   {
     id: 'power_grid_failure',
     name: '電力網障害',
-    description: '大規模な電力網障害が発生し、国家システムに影響が出ています。',
+    description: '大規模な電力網障害が発生し、国家システムに影響が出ました。',
     condition: { energy: { min: 50 } },
     effects: {
-      energy: -25,
-      economy: -10,
+      energy: -20,
+      economy: -5,
       stability: -5
     },
-    weight: 7
+    weight: 1
   },
   {
     id: 'domestic_terrorism',
@@ -96,10 +107,10 @@ const events = [
       stability: { max: 150 }
     },
     effects: {
-      stability: -10,
-      economy: -15
+      stability: -20,
+      economy: -20
     },
-    weight: 5
+    weight: 2
   },
   {
     id: 'ai_malfunction',
@@ -107,12 +118,11 @@ const events = [
     description: '重要なAIシステムが誤作動を起こし、一部のインフラに被害が出ました。',
     condition: { aiPower: { min: 30 } },
     effects: {
-      aiPower: -10,
       energy: -10,
-      economy: -15,
+      economy: -10,
       stability: -5
     },
-    weight: 6
+    weight: 3
   },
   {
     id: 'international_collaboration',
@@ -124,10 +134,10 @@ const events = [
     },
     effects: {
       aiPower: 5,
-      economy: 15,
+      economy: 5,
       stability: 5
     },
-    weight: 7
+    weight: 3
   },
   {
     id: 'ai_singularity',
@@ -153,7 +163,7 @@ const events = [
       economy: -25,
       stability: -10
     },
-    weight: 4
+    weight: 1
   },
   {
     id: 'resource_discovery',
@@ -165,33 +175,44 @@ const events = [
       economy: 20,
       stability: 5
     },
-    weight: 5
+    weight: 2
   },
   {
     id: 'brain_drain',
     name: '頭脳流出',
-    description: '優秀な科学者や技術者が他国へ流出しています。',
+    description: '優秀な科学者や技術者が他国へ流出しました。',
     condition: { 
       stability: { max: 100 },
       aiPower: { min: 10 }
     },
     effects: {
-      aiPower: -5,
-      economy: -10
+      aiPower: -1
     },
-    weight: 6
+    weight: 3
   },
   {
     id: 'military_coup',
     name: '軍事クーデター',
     description: '軍部の一部があなたの政権に対してクーデターを試みました。',
-    condition: { stability: { max: 70 } },
+    condition: { stability: { max: 50 } },
     effects: {
       stability: -40,
       economy: -20
     },
-    weight: 4
-  }
+    weight: 1
+  },
+  {
+    id: 'ai_policy_atteck',
+    name: '他国のAIの浸透',
+    description: '他国のAIが自由や平等を説いて、臣民を動揺させています。',
+    condition: { 
+      aiPower: { max: 5 },
+    },
+    effects: {
+      stability: -5
+    },
+    weight: 10
+  },
 ];
 
 // ゲームの状態に基づいてランダムなイベントを取得する関数

@@ -159,7 +159,7 @@ export const gameReducer = (state, action) => {
             let gameOverReason = '';
             if (newEnergy <= 0) gameOverReason = 'エネルギー危機により国家崩壊';
             else if (newEconomy <= 0) gameOverReason = '経済崩壊により国家崩壊';
-            else if (newStability <= 0) gameOverReason = '体制崩壊により国家崩壊';
+            else if (newStability <= 0) gameOverReason = '体制秩序が崩壊し、独裁政権転覆';
             
             return {
               ...state,

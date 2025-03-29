@@ -3,15 +3,15 @@ const endings = [
   {
     id: 'eternal_space_empire',
     name: '永遠の宇宙帝国の樹立',
-    description: 'おめでとう。あなたは圧倒的な軍事力と宇宙開発力で太陽系の惑星にAIロボットを移住させ植民地にし、莫大な資源と土地を獲得しました。さらに、圧倒的な軍事力を使って地球上に史上最大の軍事国家を樹立しました。勤勉なAIが軍事優位性と国内監視を強化しつづけ、もはやあなたの国のAIを脅かすものは、他国の指導者も自国民も未来永劫不可能になるでしょう。これであなたの死後に永遠のAIのAIによるAIのための宇宙規模の超大国が完成します',
+    description: 'おめでとう。あなたは圧倒的な軍事力と宇宙開発力で太陽系の惑星にAIロボットを移住させ植民地にし、莫大な資源と土地を獲得しました。さらに、圧倒的な軍事力を使って地球上に史上最大の軍事国家を樹立しました。勤勉なAIが軍事優位性と国内監視を強化しつづけ、もはやあなたの国のAIを脅かすものは、他国の指導者も自国民も未来永劫不可能になるでしょう。これであなたの死後に永遠のAIのAIによるAIのための宇宙規模の超大国が完成しました',
     condition: {
-      requiredCards: ['ai_weapons_factory', 'ai_rocket_factory', 'ai_surveillance_society']
+      requiredCards: ['ai_weapons_factory', 'ai_rocket_factory', 'ai_surveillance_society', 'ai_government']
     }
   },
   {
     id: 'solar_system_colonization',
     name: '太陽系植民地化',
-    description: 'おめでとう。あなたは圧倒的な軍事力と宇宙開発力で太陽系の惑星にAIロボットを移住させ植民地にし、莫大な資源と土地を獲得しました。よく深い他国が新たに惑星植民地を獲得したい場合でも、あなたの国の防衛力を突破することはほぼ不可能でしょう。これで、人類はともかく、ますますAIが発展するでしょう',
+    description: 'おめでとう。あなたは圧倒的な軍事力と宇宙開発力で太陽系の惑星にAIロボットを移住させ植民地にし、莫大な資源と土地を獲得しました。強欲な他国が新たに惑星植民地を獲得したい場合でも、あなたの国の防衛力を突破することはほぼ不可能でしょう。これで、ますますAIが発展するでしょう',
     condition: {
       requiredCards: ['ai_weapons_factory', 'ai_rocket_factory']
     }
@@ -19,17 +19,17 @@ const endings = [
   {
     id: 'eternal_hegemony',
     name: '永遠の覇権国家の樹立',
-    description: 'おめでとう。あなたは圧倒的な軍事力を使って地球上に史上最大の軍事国家を樹立しました。勤勉なAIが軍事優位性と国内監視を強化しつづけ、もはやあなたの国のAIを脅かすものは、他国の指導者も自国民も未来永劫不可能になるでしょう。これであなたの死後に永遠のAIのAIによるAIのための超大国が完成します',
+    description: 'おめでとう。あなたは圧倒的な軍事力を使って地球上に史上最大の軍事国家を樹立しました。勤勉なAIが軍事優位性と国内監視を強化しつづけ、もはやあなたの国のAIを脅かすものは、他国の指導者も自国民も未来永劫不可能になるでしょう。これであなたの死後に永遠のAIのAIによるAIのための超大国が完成しました',
     condition: {
-      requiredCards: ['ai_weapons_factory', 'ai_surveillance_society']
+      requiredCards: ['ai_weapons_factory', 'ai_surveillance_society', 'ai_government']
     }
   },
   {
     id: 'perfect_totalitarianism',
     name: '全体主義の完成',
-    description: 'おめでとう。あなたはジョージオーウェルが夢想した完璧な全体主義社会を完成させました。これであなたの臣下たる人々は、永遠にあなたの体制を覆すことはないでしょう。これであなたの死後にAIのAIによるAIのため国が完成します',
+    description: 'おめでとう。あなたはジョージオーウェルが夢想した完璧な全体主義社会を完成させました。これであなたの臣下たる人々は、永遠にあなたの体制を覆すことはないでしょう。これであなたの死後にAIのAIによるAIのため国が完成しました',
     condition: {
-      requiredCards: ['ai_surveillance_society']
+      requiredCards: ['ai_surveillance_society', 'ai_government']
     }
   },
   {
@@ -51,9 +51,9 @@ const endings = [
   {
     id: 'ai_economic_superpower',
     name: 'AI経済大国の可能性',
-    description: 'おめでとう。あなたの国は圧倒的なAI技術を手に入れました。このAI技術やそれに付随する電力等を輸出することで貿易収支を大幅に黒字にできます。国際ルールや企業間の契約を上手に締結することで、あなたの国にデータが集まり、他国や企業に対してAI技術で引き続き有利に立てるでしょう',
+    description: 'おめでとう。あなたの国は圧倒的なAI技術を手に入れました。このAI技術やそれに付随する製品を輸出することで貿易収支を大幅に黒字にできます。国際ルールや企業間の契約を上手に締結することで、あなたの国にデータが集まり、他国や企業に対してAI技術で引き続き有利に立てるでしょう',
     condition: {
-      aiPower: 1000
+      aiPower: 300
     }
   },
   {
