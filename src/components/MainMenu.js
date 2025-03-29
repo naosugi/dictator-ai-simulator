@@ -131,6 +131,12 @@ const Footer = styled.footer`
   }
 `;
 
+const UpdateInfo = styled.div`
+  color: #666666;
+  font-size: 0.7rem;
+  margin-top: 10px;
+`;
+
 const MainMenu = () => {
   const { startNewGame } = useGame();
   const [showRules, setShowRules] = useState(false);
@@ -152,6 +158,7 @@ const MainMenu = () => {
       <Footer>
         ※注意: これは架空のシミュレーションゲームです。現実の政治や国際関係を意図的に風刺したブラックジョークです。<br />
         実際の国家運営や政治とは関係ありません
+        <UpdateInfo>2025/03/30 一部文言やパラメータ調整</UpdateInfo>
       </Footer>
       
       {showRules && (
